@@ -4,7 +4,7 @@ require 'config.php';
 
 class Modelo
 {
-  private $conexion ;
+  private $conexion;
 
   function __construct()
   {
@@ -25,14 +25,25 @@ class Modelo
 
   function registrarUsuario($usuario, $clave)
   {
-    $resultado = $this->conexion->query("SELECT * FROM usuarios WHERE nombre='$usuario';");
+    $sql = "SELECT * FROM usuarios WHERE nombre='$usuario';";
+    $resultado = $this->conexion->query($sql);
     if ($resultado->num_rows > 0)
     {
-      echo "usuario existe";
+      echo "El nombre de usuario ya existe, por favor elija otro";
+      return false;
     }
     else
     {
-      echo "usuario no existe";
+      $sql = "INSERT INTO usuarios (nombre, clave) VALUES ('$usuario', '$clave');";
+      if ($this->conexion->query($sql) == TRUE){
+        echo "Usuario creado exitosamente";
+        return true;
+      }
+      else {
+        echo "Error al crear usuario: ". $conexion->error;
+        return false;
+      }
     }
+    $conexion->close();
   }
 }
